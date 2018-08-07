@@ -99,7 +99,8 @@
     <PostBuildEvent>
       <Command>copy "$(SolutionDir)Library\SFMLx32\bin\sfml-graphics-d-2.dll" "$(OutDir)"
 copy "$(SolutionDir)Library\SFMLx32\bin\sfml-system-d-2.dll" "$(OutDir)"
-copy "$(SolutionDir)Library\SFMLx32\bin\sfml-window-d-2.dll" "$(OutDir)"</Command>
+copy "$(SolutionDir)Library\SFMLx32\bin\sfml-window-d-2.dll" "$(OutDir)"
+copy "$(SolutionDir)Assets\BG\bg.png" "$(Outdir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -117,7 +118,8 @@ copy "$(SolutionDir)Library\SFMLx32\bin\sfml-window-d-2.dll" "$(OutDir)"</Comman
     <PostBuildEvent>
       <Command>copy "$(SolutionDir)Library\SFMLx64\bin\sfml-graphics-d-2.dll" "$(OutDir)"
 copy "$(SolutionDir)Library\SFMLx64\bin\sfml-system-d-2.dll" "$(OutDir)"
-copy "$(SolutionDir)Library\SFMLx64\bin\sfml-window-d-2.dll" "$(OutDir)"</Command>
+copy "$(SolutionDir)Library\SFMLx64\bin\sfml-window-d-2.dll" "$(OutDir)"
+copy "$(SolutionDir)Assets\BG\bg.png" "$(Outdir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -139,6 +141,9 @@ copy "$(SolutionDir)Library\SFMLx64\bin\sfml-window-d-2.dll" "$(OutDir)"</Comman
       <EntryPointSymbol>
       </EntryPointSymbol>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(SolutionDir)Assets\BG\bg.png" "$(Outdir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -157,6 +162,9 @@ copy "$(SolutionDir)Library\SFMLx64\bin\sfml-window-d-2.dll" "$(OutDir)"</Comman
       <AdditionalDependencies>sfml-graphics-s.lib;sfml-window-s.lib;sfml-system-s.lib;sfml-main.lib;opengl32.lib;freetype.lib;jpeg.lib;winmm.lib;gdi32.lib;SSM-release.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(SolutionDir)Assets\BG\bg.png" "$(Outdir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp" />
