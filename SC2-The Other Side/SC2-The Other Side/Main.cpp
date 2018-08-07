@@ -1,7 +1,6 @@
-#include<iostream>
-using namespace std;
+#include "Game.h"
 
-void main() {
-	cout << "Hello world";
-	cin.get();
+int main()
+{
+	Game* juego = new Game();
 }
