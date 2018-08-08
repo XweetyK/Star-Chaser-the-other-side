@@ -2,6 +2,12 @@
 #define GAME_H
 #define DSL1_CANT 3
 #define DSL3_CANT 5
+#define BOX_CANT 5
+#define BOX_MAX 450
+#define BOX_MIN 75
+#define DS1_L 3
+#define DS2_L 1
+#define DS3_L 5
 #include <iostream>
 #include <ctime>
 #include <SFML/Graphics.hpp>
@@ -61,7 +67,13 @@ class Game{
 	Texture playChara1;
 	Texture playChara2;
 	Texture playChara3;
-	Sprite pBG;
+	Texture playBox1;
+	Texture playBox2;
+	Texture playBox3;
+	Texture playBox4;
+	Texture playBox5;
+	Sprite pBG1;
+	Sprite pBG2;
 	Sprite pDB;
 	Sprite pScore;
 	Sprite pLife;
@@ -71,10 +83,20 @@ class Game{
 	Sprite pChara1;
 	Sprite pChara2;
 	Sprite pChara3;
+	struct PBox{
+		Sprite sprite;
+		Vector2f pos;
+	};
+	PBox pBox[BOX_CANT];
 	int playSpeed;
 	int bgpos;
+	int bgpos2;
 	int playCPos_X;
 	int playCPos_Y;
+	int box_Y;
+	int DS1Life;
+	int DS2Life;
+	int DS3Life;
 	
 public:
 	Game();

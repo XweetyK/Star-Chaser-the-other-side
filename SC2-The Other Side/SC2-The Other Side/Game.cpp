@@ -15,8 +15,14 @@ void Game::init() {
 	selectM = 1;
 	selectC = 1;
 	bgpos = 0;
+	bgpos2 = 1520;
 	playCPos_X = 20;
 	playCPos_Y = 250;
+	srand(time(0));
+	box_Y = 0;
+	DS1Life = DS1_L;
+	DS2Life = DS2_L;
+	DS3Life = DS3_L;
 	update();
 }
 void Game::update() {
@@ -103,6 +109,9 @@ void Game::menu() {
 				break;
 			}
 		}
+		if (Keyboard::isKeyPressed(Keyboard::Escape)) {
+			gameState = EXIT;
+		}
 		cout << selectM;
 		window.clear();
 		window.draw(mBG);
@@ -113,7 +122,6 @@ void Game::menu() {
 		update();
 	}
 }
-
 void Game::select() {
 	menuBg.loadFromFile("../Assets/BG/bg.png");
 	mBG.setTexture(menuBg);
@@ -220,6 +228,9 @@ void Game::select() {
 				break;
 			}
 		}
+		if (Keyboard::isKeyPressed(Keyboard::Escape)) {
+			gameState = MENU;
+		}
 		window.clear();
 		window.draw(mBG);
 		window.draw(sCHead1);
@@ -234,36 +245,53 @@ void Game::select() {
 		update();
 	}
 }
-
 void Game::play() {
-	playBG.loadFromFile("../Assets/BG/bgGame.png");
-	playDB1.loadFromFile("../Assets/Menu/dataBar0.png");
-	playDB2.loadFromFile("../Assets/Menu/dataBar1.png");
-	playDB3.loadFromFile("../Assets/Menu/dataBar2.png");
-	playScore.loadFromFile("../Assets/Menu/button5.png");
-	playLife.loadFromFile("../Assets/Menu/button4.png");
-	playHead1.loadFromFile("../Assets/Menu/icon0.png");
-	playHead2.loadFromFile("../Assets/Menu/icon1.png");
-	playHead3.loadFromFile("../Assets/Menu/icon2.png");
-	playHead1L.loadFromFile("../Assets/Menu/icon0L.png");
-	playHead2L.loadFromFile("../Assets/Menu/icon1L.png");
-	playHead3L.loadFromFile("../Assets/Menu/icon2L.png");
-	playChara1.loadFromFile("../Assets/BG/Level/DS-1.png");
-	playChara2.loadFromFile("../Assets/BG/Level/DS-2.png");
-	playChara3.loadFromFile("../Assets/BG/Level/DS-3.png");
-	pChara1.setTexture(playChara1);
-	pChara2.setTexture(playChara2);
-	pChara3.setTexture(playChara3);
-	pBG.setTexture(playBG);
-	pDB.setTexture(playDB1);
-	pScore.setTexture(playScore);
-	pLife.setTexture(playLife);
-	pScore.setPosition(300, 10);
-	pLife.setPosition(-30, 10);
-	pChara1.setPosition(playCPos_X, playCPos_Y);
-	pChara2.setPosition(playCPos_X, playCPos_Y);
-	pChara3.setPosition(playCPos_X, playCPos_Y);
-
+	//ASSETS--------------------------------------------------------------------------------------------
+	{
+		playBG.loadFromFile("../Assets/BG/bgGame.png");
+		playDB1.loadFromFile("../Assets/Menu/dataBar0.png");
+		playDB2.loadFromFile("../Assets/Menu/dataBar1.png");
+		playDB3.loadFromFile("../Assets/Menu/dataBar2.png");
+		playScore.loadFromFile("../Assets/Menu/button5.png");
+		playLife.loadFromFile("../Assets/Menu/button4.png");
+		playHead1.loadFromFile("../Assets/Menu/icon0.png");
+		playHead2.loadFromFile("../Assets/Menu/icon1.png");
+		playHead3.loadFromFile("../Assets/Menu/icon2.png");
+		playHead1L.loadFromFile("../Assets/Menu/icon0L.png");
+		playHead2L.loadFromFile("../Assets/Menu/icon1L.png");
+		playHead3L.loadFromFile("../Assets/Menu/icon2L.png");
+		playChara1.loadFromFile("../Assets/BG/Level/DS-1.png");
+		playChara2.loadFromFile("../Assets/BG/Level/DS-2.png");
+		playChara3.loadFromFile("../Assets/BG/Level/DS-3.png");
+		playBox1.loadFromFile("../Assets/BG/Items/obs0.png");
+		playBox2.loadFromFile("../Assets/BG/Items/obs1.png");
+		playBox3.loadFromFile("../Assets/BG/Items/obs2.png");
+		playBox4.loadFromFile("../Assets/BG/Items/obs3.png");
+		playBox5.loadFromFile("../Assets/BG/Items/obs5.png");
+		pChara1.setTexture(playChara1);
+		pChara2.setTexture(playChara2);
+		pChara3.setTexture(playChara3);
+		pBG1.setTexture(playBG);
+		pBG2.setTexture(playBG);
+		pDB.setTexture(playDB1);
+		pScore.setTexture(playScore);
+		pLife.setTexture(playLife);
+		pBox[0].sprite.setTexture(playBox1);
+		pBox[1].sprite.setTexture(playBox2);
+		pBox[2].sprite.setTexture(playBox3);
+		pBox[3].sprite.setTexture(playBox4);
+		pBox[4].sprite.setTexture(playBox5);
+		pScore.setPosition(300, 10);
+		pLife.setPosition(-30, 10);
+		pBG2.setPosition(bgpos2, 0);
+		pChara1.setPosition(playCPos_X, playCPos_Y);
+		pChara2.setPosition(playCPos_X, playCPos_Y);
+		pChara3.setPosition(playCPos_X, playCPos_Y);
+		for (int i = 0; i < BOX_CANT; i++) {
+			box_Y = ((rand() % (BOX_MIN - BOX_MAX + 1) + BOX_MIN));
+			pBox[i].sprite.setPosition((i * 160) + 820, box_Y);
+		}
+	}
 	switch (charaSelect)
 	{
 	case DS1:
@@ -298,15 +326,21 @@ void Game::play() {
 				window.close();
 		}
 
-		//CONTROL--------------------------------------------------------------------------------------
+		//CONTROL---------------------------------------------------------------------------------------
 		{
 			if (Keyboard::isKeyPressed(Keyboard::Up)) {
 				if (playCPos_Y > 75)
 					playCPos_Y -= 1 * playSpeed;
 			}
 			if (Keyboard::isKeyPressed(Keyboard::Down)) {
-				if (playCPos_Y < 420)
-					playCPos_Y += 1 * playSpeed;
+				if (charaSelect == DS3) {
+					if (playCPos_Y < 360)
+						playCPos_Y += 1 * playSpeed;
+				}
+				else {
+					if (playCPos_Y < 420)
+						playCPos_Y += 1 * playSpeed;
+				}
 			}
 			if (Keyboard::isKeyPressed(Keyboard::Left)) {
 				if (playCPos_X > 10)
@@ -321,26 +355,98 @@ void Game::play() {
 				init();
 			}
 		}
-
+		//UPDATE POS------------------------------------------------------------------------------------
+		{
+			switch (charaSelect)
+			{
+			case DS1:
+				pChara1.setPosition(playCPos_X, playCPos_Y);
+				break;
+			case DS2:
+				pChara2.setPosition(playCPos_X, playCPos_Y);
+				break;
+			case DS3:
+				pChara3.setPosition(playCPos_X, playCPos_Y);
+				break;
+			}
+		}
+		//BACKGROUND------------------------------------------------------------------------------------
+		{
+			pBG1.setPosition(bgpos, 0);
+			pBG2.setPosition(bgpos2, 0);
+			bgpos -= 1 * playSpeed;
+			bgpos2 -= 1 * playSpeed;
+			if (bgpos < -1530) { bgpos = bgpos2 + 1520; }
+			if (bgpos2 < -1530) { bgpos2 = bgpos + 1520; }
+		}
+		//OBSTACLES-------------------------------------------------------------------------------------
+		{
+			
+			for (int i = 0; i < BOX_CANT; i++) { //why do I need this? idk, but without it the game don't work
+				pBox[i].pos = pBox[i].sprite.getPosition();
+			}
+			for (int i = 0; i < BOX_CANT; i++) {
+				pBox[i].sprite.move(-playSpeed, 0);
+				if (pBox[i].pos.x < -50) {
+					box_Y = ((rand() % (BOX_MIN - BOX_MAX + 1) + BOX_MIN));
+					pBox[i].sprite.setPosition(900, box_Y);
+				}
+			}
+		}
+		//LIFE------------------------------------------------------------------------------------------
 		switch (charaSelect)
 		{
 		case DS1:
-			pChara1.setPosition(playCPos_X, playCPos_Y);
-			break;
-		case DS2:
-			pChara2.setPosition(playCPos_X, playCPos_Y);
+			switch (DS1Life)
+			{
+			case 2:
+				DS1L[2].setTexture(playHead1L);
+				break;
+			case 1:
+				DS1L[2].setTexture(playHead1L);
+				DS1L[1].setTexture(playHead1L);
+				break;
+			case 0:
+				result();
+				break;
+			}
 			break;
 		case DS3:
-			pChara3.setPosition(playCPos_X, playCPos_Y);
+			switch (DS3Life)
+			{
+			case 4:
+				DS3L[4].setTexture(playHead3L);
+				break;
+			case 3:
+				DS3L[4].setTexture(playHead3L);
+				DS3L[3].setTexture(playHead3L);
+				break;
+			case 2:
+				DS3L[4].setTexture(playHead3L);
+				DS3L[3].setTexture(playHead3L);
+				DS3L[2].setTexture(playHead3L);
+				break;
+			case 1:
+				DS3L[4].setTexture(playHead3L);
+				DS3L[3].setTexture(playHead3L);
+				DS3L[2].setTexture(playHead3L);
+				DS3L[1].setTexture(playHead3L);
+				break;
+			case 0:
+				result();
+				break;
+			}
 			break;
 		}
-		pBG.setPosition(bgpos, 0);
-		bgpos-=1*playSpeed;
 		window.clear();
-		window.draw(pBG);
+		window.draw(pBG1);
+		window.draw(pBG2);
 		window.draw(pDB);
 		window.draw(pScore);
 		window.draw(pLife);
+		for (int i = 0; i < BOX_CANT; i++) {
+			window.draw(pBox[i].sprite);
+		}
 		switch (charaSelect)
 		{
 		case DS1:
