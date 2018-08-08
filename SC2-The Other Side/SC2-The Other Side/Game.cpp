@@ -105,7 +105,6 @@ void Game::menu() {
 				break;
 			case 2:
 				gameState = SCORES;
-				init();
 				break;
 			case 3:
 				gameState = EXIT;
@@ -618,13 +617,9 @@ void Game::result() {
 			if (event.type == Event::Closed)
 				window.close();
 		}
-		if (Keyboard::isKeyPressed(Keyboard::Space)) {
+		if (Keyboard::isKeyPressed(Keyboard::Return)) {
 			gameState = MENU;
-			update();
-		}
-		if (Keyboard::isKeyPressed(Keyboard::Escape)) {
-			gameState = MENU;
-			update();
+			init();
 		}
 		window.clear();
 		window.draw(rBG);
@@ -634,6 +629,7 @@ void Game::result() {
 		sf::sleep(seconds(0.1f));
 	}
 }
+//											Glitchy Scoreboard
 void Game::score() {
 	scoreBG.loadFromFile("../Assets/BG/bgScore.png");
 	sBG.setTexture(scoreBG);
@@ -655,16 +651,8 @@ void Game::score() {
 		scorePoint[i].setOutlineThickness(2);
 		scorePoint[i].setOutlineColor(Color(139, 255, 8, 255));
 		scorePoint[i].setFillColor(Color(0, 0, 0, 255));
-
-		ss.clear();
-		ss.str("");
-		ss <<(i+1)<<".  "<<node[i].name;
-		scoreName[i].setString(ss.str());
-		ss.clear();
-		ss.str("");
-		ss << node[i].score;
-		scorePoint[i].setString(ss.str());
 	}
+
 	while (window.isOpen())
 	{
 		Event event;
@@ -673,13 +661,20 @@ void Game::score() {
 			if (event.type == Event::Closed)
 				window.close();
 		}
-		if (Keyboard::isKeyPressed(Keyboard::Space)) {
+		if (Keyboard::isKeyPressed(Keyboard::Return)) {
 			gameState = MENU;
-			update();
+			init();
 		}
-		if (Keyboard::isKeyPressed(Keyboard::Escape)) {
-			gameState = MENU;
-			update();
+		for (int i = 0; i < NODE_CANT; i++)
+		{
+			ss.clear();
+			ss.str("");
+			ss << (i + 1) << ".  " << node[i].name;
+			scoreName[i].setString(ss.str());
+			ss.clear();
+			ss.str("");
+			ss << node[i].score;
+			scorePoint[i].setString(ss.str());
 		}
 		window.clear();
 		window.draw(sBG);
