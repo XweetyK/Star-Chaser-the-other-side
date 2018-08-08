@@ -100,7 +100,7 @@
       <Command>copy "$(SolutionDir)Library\SFMLx32\bin\sfml-graphics-d-2.dll" "$(OutDir)"
 copy "$(SolutionDir)Library\SFMLx32\bin\sfml-system-d-2.dll" "$(OutDir)"
 copy "$(SolutionDir)Library\SFMLx32\bin\sfml-window-d-2.dll" "$(OutDir)"
-copy "$(SolutionDir)Assets\BG\bg.png" "$(Outdir)"</Command>
+xcopy "$(SolutionDir)Assets" "$(SolutionDir)bin\Output\Assets\" /Y /E</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -119,7 +119,7 @@ copy "$(SolutionDir)Assets\BG\bg.png" "$(Outdir)"</Command>
       <Command>copy "$(SolutionDir)Library\SFMLx64\bin\sfml-graphics-d-2.dll" "$(OutDir)"
 copy "$(SolutionDir)Library\SFMLx64\bin\sfml-system-d-2.dll" "$(OutDir)"
 copy "$(SolutionDir)Library\SFMLx64\bin\sfml-window-d-2.dll" "$(OutDir)"
-copy "$(SolutionDir)Assets\BG\bg.png" "$(Outdir)"</Command>
+xcopy "$(SolutionDir)Assets" "$(SolutionDir)bin\Output\Assets\" /Y /E</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -142,7 +142,7 @@ copy "$(SolutionDir)Assets\BG\bg.png" "$(Outdir)"</Command>
       </EntryPointSymbol>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(SolutionDir)Assets\BG\bg.png" "$(Outdir)"</Command>
+      <Command>xcopy "$(SolutionDir)Assets" "$(SolutionDir)bin\Output\Assets\" /Y /E</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -163,7 +163,7 @@ copy "$(SolutionDir)Assets\BG\bg.png" "$(Outdir)"</Command>
       <SubSystem>Windows</SubSystem>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(SolutionDir)Assets\BG\bg.png" "$(Outdir)"</Command>
+      <Command>xcopy "$(SolutionDir)Assets" "$(SolutionDir)bin\Output\Assets\" /Y /E</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -38,11 +38,12 @@ void Game::update() {
 	case SELECT:
 		select();
 		break;
+	case RESULT:
+		result();
+		break;
 	case SCORES:
 		score();
 		break;
-	case RESULT:
-		result();
 	case EXIT:
 		window.close();
 		break;
@@ -104,6 +105,7 @@ void Game::menu() {
 				break;
 			case 2:
 				gameState = SCORES;
+				init();
 				break;
 			case 3:
 				gameState = EXIT;
@@ -432,13 +434,16 @@ void Game::play() {
 					DS1L[1].setTexture(playHead1L);
 					break;
 				case 0:
-					result();
+					gameState = RESULT;
+					update();
 					break;
 				}
 				break;
 			case DS2:
-				if (DS2Life == 0)
-					result();
+				if (DS2Life == 0) {
+					gameState = RESULT;
+					update();
+				}
 				break;
 			case DS3:
 				switch (DS3Life)
@@ -462,60 +467,63 @@ void Game::play() {
 					DS3L[1].setTexture(playHead3L);
 					break;
 				case 0:
-					result();
+					gameState = RESULT;
+					update();
 					break;
 				}
 				break;
 			}
 		}
 		//COLLISION-------------------------------------------------------------------------------------
-		switch (charaSelect)
 		{
-		case DS1:
-			for (int i = 0; i < BOX_CANT; i++){
-				if (pChara1.getGlobalBounds().intersects(pBox[i].sprite.getGlobalBounds())) {
-					DS1Life--;
-					pBox[i].sprite.move(900, 0);
+			switch (charaSelect)
+			{
+			case DS1:
+				for (int i = 0; i < BOX_CANT; i++) {
+					if (pChara1.getGlobalBounds().intersects(pBox[i].sprite.getGlobalBounds())) {
+						DS1Life--;
+						pBox[i].sprite.move(900, 0);
+					}
 				}
-			}
-			for (int i = 0; i < GEM_CANT; i++) {
-				if (pChara1.getGlobalBounds().intersects(pGem[i].sprite.getGlobalBounds())) {
-					playScoreCant += 100;
-					gem_y = ((rand() % (GEM_MIN - GEM_MAX + 1) + GEM_MIN));
-					pGem[i].sprite.move(900, gem_y);
+				for (int i = 0; i < GEM_CANT; i++) {
+					if (pChara1.getGlobalBounds().intersects(pGem[i].sprite.getGlobalBounds())) {
+						playScoreCant += 100;
+						gem_y = ((rand() % (GEM_MIN - GEM_MAX + 1) + GEM_MIN));
+						pGem[i].sprite.move(900, gem_y);
+					}
 				}
-			}
-			break;
-		case DS2:
-			for (int i = 0; i < BOX_CANT; i++) {
-				if (pChara2.getGlobalBounds().intersects(pBox[i].sprite.getGlobalBounds())) {
-					DS2Life--;
-					pBox[i].sprite.move(900, 0);
+				break;
+			case DS2:
+				for (int i = 0; i < BOX_CANT; i++) {
+					if (pChara2.getGlobalBounds().intersects(pBox[i].sprite.getGlobalBounds())) {
+						DS2Life--;
+						pBox[i].sprite.move(900, 0);
+					}
 				}
-			}
-			for (int i = 0; i < GEM_CANT; i++) {
-				if (pChara2.getGlobalBounds().intersects(pGem[i].sprite.getGlobalBounds())) {
-					playScoreCant += 100;
-					gem_y = ((rand() % (GEM_MIN - GEM_MAX + 1) + GEM_MIN));
-					pGem[i].sprite.move(900, gem_y);
+				for (int i = 0; i < GEM_CANT; i++) {
+					if (pChara2.getGlobalBounds().intersects(pGem[i].sprite.getGlobalBounds())) {
+						playScoreCant += 100;
+						gem_y = ((rand() % (GEM_MIN - GEM_MAX + 1) + GEM_MIN));
+						pGem[i].sprite.move(900, gem_y);
+					}
 				}
-			}
-			break;
-		case DS3:
-			for (int i = 0; i < BOX_CANT; i++) {
-				if (pChara3.getGlobalBounds().intersects(pBox[i].sprite.getGlobalBounds())) {
-					DS3Life--;
-					pBox[i].sprite.move(900, 0);
+				break;
+			case DS3:
+				for (int i = 0; i < BOX_CANT; i++) {
+					if (pChara3.getGlobalBounds().intersects(pBox[i].sprite.getGlobalBounds())) {
+						DS3Life--;
+						pBox[i].sprite.move(900, 0);
+					}
 				}
-			}
-			for (int i = 0; i < GEM_CANT; i++) {
-				if (pChara3.getGlobalBounds().intersects(pGem[i].sprite.getGlobalBounds())) {
-					playScoreCant += 100;
-					gem_y = ((rand() % (GEM_MIN - GEM_MAX + 1) + GEM_MIN));
-					pGem[i].sprite.move(900, gem_y);
+				for (int i = 0; i < GEM_CANT; i++) {
+					if (pChara3.getGlobalBounds().intersects(pGem[i].sprite.getGlobalBounds())) {
+						playScoreCant += 100;
+						gem_y = ((rand() % (GEM_MIN - GEM_MAX + 1) + GEM_MIN));
+						pGem[i].sprite.move(900, gem_y);
+					}
 				}
+				break;
 			}
-			break;
 		}
 		//SCORE-----------------------------------------------------------------------------------------
 		{
@@ -524,6 +532,7 @@ void Game::play() {
 			ss << playScoreCant;
 			scoreText.setString(ss.str());
 		}
+
 		window.clear();
 		window.draw(pBG1);
 		window.draw(pBG2);
@@ -558,5 +567,128 @@ void Game::play() {
 		sf::sleep(seconds(0.05f));
 	}
 }
-void Game::result() {}
-void Game::score() {}
+void Game::result() {
+	resBG.loadFromFile("../Assets/BG/bgRes.png");
+	rBG.setTexture(resBG);
+	selectBack.loadFromFile("../Assets/Menu/button3.png");
+	sBack.setTexture(selectBack);
+	sBack.setPosition(577, 425);
+	font.loadFromFile("../Assets/8bit.ttf");
+	resScore.setFont(font);
+	resScore.setPosition(300, 238);
+	resScore.setCharacterSize(24);
+	resScore.setOutlineThickness(2);
+	resScore.setFillColor(Color(0, 0, 0, 255));
+	switch (charaSelect)
+	{
+	case DS1:
+		resScore.setOutlineColor(Color(255, 0, 255, 255));
+		ss.clear();
+		ss.str("");
+		ss << "DS-SOLDIER 1:   " << playScoreCant;
+		resScore.setString(ss.str());
+		name[0] = 'D'; name[1] = 'S'; name[2] = '1';
+		scoreBoard.insertScr(name, playScoreCant);
+		break;
+	case DS2:
+		resScore.setOutlineColor(Color(0, 255, 255, 255));
+		ss.clear();
+		ss.str("");
+		ss << "DS-JET 2.1:   " << playScoreCant;
+		resScore.setString(ss.str());
+		name[0] = 'D'; name[1] = 'S'; name[2] = '2';
+		scoreBoard.insertScr(name, playScoreCant);
+		break;
+	case DS3:
+		resScore.setOutlineColor(Color(255, 0, 0, 255));
+		ss.clear();
+		ss.str("");
+		ss << "DS-TANK 3:   " << playScoreCant;
+		resScore.setString(ss.str());
+		name[0] = 'D'; name[1] = 'S'; name[2] = '3';
+		scoreBoard.insertScr(name, playScoreCant);
+		break;
+	}
+
+	while (window.isOpen())
+	{
+		Event event;
+		while (window.pollEvent(event))
+		{
+			if (event.type == Event::Closed)
+				window.close();
+		}
+		if (Keyboard::isKeyPressed(Keyboard::Space)) {
+			gameState = MENU;
+			update();
+		}
+		if (Keyboard::isKeyPressed(Keyboard::Escape)) {
+			gameState = MENU;
+			update();
+		}
+		window.clear();
+		window.draw(rBG);
+		window.draw(resScore);
+		window.draw(sBack);
+		window.display();
+		sf::sleep(seconds(0.1f));
+	}
+}
+void Game::score() {
+	scoreBG.loadFromFile("../Assets/BG/bgScore.png");
+	sBG.setTexture(scoreBG);
+	selectBack.loadFromFile("../Assets/Menu/button3.png");
+	sBack.setTexture(selectBack);
+	sBack.setPosition(577, 425);
+	font.loadFromFile("../Assets/8bit.ttf");
+	for (int i = 0; i < NODE_CANT; i++){
+		node[i] = scoreBoard.showScr(i);
+		scoreName[i].setFont(font);
+		scoreName[i].setPosition(200, (i * 40) + 100);
+		scoreName[i].setCharacterSize(24);
+		scoreName[i].setOutlineThickness(2);
+		scoreName[i].setOutlineColor(Color(139, 255, 8, 255));
+		scoreName[i].setFillColor(Color(0, 0, 0, 255));
+		scorePoint[i].setFont(font);
+		scorePoint[i].setPosition(500, (i * 40) + 100);
+		scorePoint[i].setCharacterSize(24);
+		scorePoint[i].setOutlineThickness(2);
+		scorePoint[i].setOutlineColor(Color(139, 255, 8, 255));
+		scorePoint[i].setFillColor(Color(0, 0, 0, 255));
+
+		ss.clear();
+		ss.str("");
+		ss <<(i+1)<<".  "<<node[i].name;
+		scoreName[i].setString(ss.str());
+		ss.clear();
+		ss.str("");
+		ss << node[i].score;
+		scorePoint[i].setString(ss.str());
+	}
+	while (window.isOpen())
+	{
+		Event event;
+		while (window.pollEvent(event))
+		{
+			if (event.type == Event::Closed)
+				window.close();
+		}
+		if (Keyboard::isKeyPressed(Keyboard::Space)) {
+			gameState = MENU;
+			update();
+		}
+		if (Keyboard::isKeyPressed(Keyboard::Escape)) {
+			gameState = MENU;
+			update();
+		}
+		window.clear();
+		window.draw(sBG);
+		window.draw(sBack);
+		for (int i = 0; i < NODE_CANT; i++){
+			window.draw(scoreName[i]);
+			window.draw(scorePoint[i]);
+		}
+		window.display();
+		sf::sleep(seconds(0.1f));
+	}
+}

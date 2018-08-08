@@ -11,16 +11,12 @@
 #define DS1_L 3
 #define DS2_L 1
 #define DS3_L 5
-#define DS1_X 96
-#define DS1_Y 62
-#define DS2_X 162
-#define DS2_Y 66
-#define DS3_X 130
-#define DS3_Y 130
+#define NODE_CANT 10
 #include <iostream>
 #include <ctime>
 #include <sstream>
 #include <SFML/Graphics.hpp>
+#include <SSM/Scoreboard.h>
 using namespace std;
 using namespace sf;
 class Game{
@@ -117,6 +113,18 @@ class Game{
 	int DS2Life;
 	int DS3Life;
 	int playScoreCant;
+	//SCORE-------------------
+	Texture scoreBG;
+	Sprite sBG;
+	Scoreboard scoreBoard;
+	Nodo node[NODE_CANT];
+	Text scoreName[NODE_CANT];
+	Text scorePoint[NODE_CANT];
+	//RESULT------------------
+	Texture resBG;
+	Sprite rBG;
+	Text resScore;
+	char name[3];
 	
 public:
 	Game();
