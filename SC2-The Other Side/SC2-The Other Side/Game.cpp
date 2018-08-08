@@ -23,6 +23,7 @@ void Game::init() {
 	DS1Life = DS1_L;
 	DS2Life = DS2_L;
 	DS3Life = DS3_L;
+	playScoreCant = 0;
 	update();
 }
 void Game::update() {
@@ -268,6 +269,7 @@ void Game::play() {
 		playBox3.loadFromFile("../Assets/BG/Items/obs2.png");
 		playBox4.loadFromFile("../Assets/BG/Items/obs3.png");
 		playBox5.loadFromFile("../Assets/BG/Items/obs5.png");
+		playGem.loadFromFile("../Assets/BG/Items/gem00.png");
 		pChara1.setTexture(playChara1);
 		pChara2.setTexture(playChara2);
 		pChara3.setTexture(playChara3);
@@ -291,6 +293,17 @@ void Game::play() {
 			box_Y = ((rand() % (BOX_MIN - BOX_MAX + 1) + BOX_MIN));
 			pBox[i].sprite.setPosition((i * 160) + 820, box_Y);
 		}
+		for (int i = 0; i < GEM_CANT; i++) {
+			pGem[i].sprite.setTexture(playGem);
+			gem_y = ((rand() % (GEM_MIN - GEM_MAX + 1) + GEM_MIN));
+			pGem[i].sprite.setPosition((i * 80) + 100, gem_y);
+		}
+		font.loadFromFile("../Assets/8bit.ttf");
+		scoreText.setFont(font);
+		scoreText.setPosition(500, 18);
+		scoreText.setCharacterSize(18);
+		scoreText.setOutlineThickness(2);
+		scoreText.setFillColor(Color(0, 0, 0, 255));
 	}
 	switch (charaSelect)
 	{
@@ -301,12 +314,14 @@ void Game::play() {
 		for (int i = 0; i < DSL1_CANT; i++) {
 			DS1L[i].setPosition((i * 40) + 120, 8);}
 		playSpeed = 10;
+		scoreText.setOutlineColor(Color(255, 0, 255, 255));
 		break;
 	case DS2:
 		pDB.setTexture(playDB2);
 		DS2L.setTexture(playHead2);
 		DS2L.setPosition(120, 8);
 		playSpeed = 20;
+		scoreText.setOutlineColor(Color(0, 255, 255, 255));
 		break;
 	case DS3:
 		pDB.setTexture(playDB3);
@@ -315,6 +330,7 @@ void Game::play() {
 		for (int i = 0; i < DSL3_CANT; i++) {
 			DS3L[i].setPosition((i * 40) + 120, 8);}
 		playSpeed = 5;
+		scoreText.setOutlineColor(Color(255, 0, 0, 255));
 		break;
 	}
 	while (window.isOpen())
@@ -381,11 +397,8 @@ void Game::play() {
 		}
 		//OBSTACLES-------------------------------------------------------------------------------------
 		{
-			
-			for (int i = 0; i < BOX_CANT; i++) { //why do I need this? idk, but without it the game don't work
-				pBox[i].pos = pBox[i].sprite.getPosition();
-			}
 			for (int i = 0; i < BOX_CANT; i++) {
+				pBox[i].pos = pBox[i].sprite.getPosition();
 				pBox[i].sprite.move(-playSpeed, 0);
 				if (pBox[i].pos.x < -50) {
 					box_Y = ((rand() % (BOX_MIN - BOX_MAX + 1) + BOX_MIN));
@@ -393,57 +406,134 @@ void Game::play() {
 				}
 			}
 		}
+		//BONUS-----------------------------------------------------------------------------------------
+		{
+			for (int i = 0; i < GEM_CANT; i++) {
+				pGem[i].pos = pGem[i].sprite.getPosition();
+				pGem[i].sprite.move(-playSpeed, 0);
+				if (pGem[i].pos.x < -50) {
+					gem_y = ((rand() % (GEM_MIN - GEM_MAX + 1) + GEM_MIN));
+					pGem[i].sprite.setPosition(900, gem_y);
+				}
+			}
+		}
 		//LIFE------------------------------------------------------------------------------------------
+		{
+			switch (charaSelect)
+			{
+			case DS1:
+				switch (DS1Life)
+				{
+				case 2:
+					DS1L[2].setTexture(playHead1L);
+					break;
+				case 1:
+					DS1L[2].setTexture(playHead1L);
+					DS1L[1].setTexture(playHead1L);
+					break;
+				case 0:
+					result();
+					break;
+				}
+				break;
+			case DS2:
+				if (DS2Life == 0)
+					result();
+				break;
+			case DS3:
+				switch (DS3Life)
+				{
+				case 4:
+					DS3L[4].setTexture(playHead3L);
+					break;
+				case 3:
+					DS3L[4].setTexture(playHead3L);
+					DS3L[3].setTexture(playHead3L);
+					break;
+				case 2:
+					DS3L[4].setTexture(playHead3L);
+					DS3L[3].setTexture(playHead3L);
+					DS3L[2].setTexture(playHead3L);
+					break;
+				case 1:
+					DS3L[4].setTexture(playHead3L);
+					DS3L[3].setTexture(playHead3L);
+					DS3L[2].setTexture(playHead3L);
+					DS3L[1].setTexture(playHead3L);
+					break;
+				case 0:
+					result();
+					break;
+				}
+				break;
+			}
+		}
+		//COLLISION-------------------------------------------------------------------------------------
 		switch (charaSelect)
 		{
 		case DS1:
-			switch (DS1Life)
-			{
-			case 2:
-				DS1L[2].setTexture(playHead1L);
-				break;
-			case 1:
-				DS1L[2].setTexture(playHead1L);
-				DS1L[1].setTexture(playHead1L);
-				break;
-			case 0:
-				result();
-				break;
+			for (int i = 0; i < BOX_CANT; i++){
+				if (pChara1.getGlobalBounds().intersects(pBox[i].sprite.getGlobalBounds())) {
+					DS1Life--;
+					pBox[i].sprite.move(900, 0);
+				}
+			}
+			for (int i = 0; i < GEM_CANT; i++) {
+				if (pChara1.getGlobalBounds().intersects(pGem[i].sprite.getGlobalBounds())) {
+					playScoreCant += 100;
+					gem_y = ((rand() % (GEM_MIN - GEM_MAX + 1) + GEM_MIN));
+					pGem[i].sprite.move(900, gem_y);
+				}
+			}
+			break;
+		case DS2:
+			for (int i = 0; i < BOX_CANT; i++) {
+				if (pChara2.getGlobalBounds().intersects(pBox[i].sprite.getGlobalBounds())) {
+					DS2Life--;
+					pBox[i].sprite.move(900, 0);
+				}
+			}
+			for (int i = 0; i < GEM_CANT; i++) {
+				if (pChara2.getGlobalBounds().intersects(pGem[i].sprite.getGlobalBounds())) {
+					playScoreCant += 100;
+					gem_y = ((rand() % (GEM_MIN - GEM_MAX + 1) + GEM_MIN));
+					pGem[i].sprite.move(900, gem_y);
+				}
 			}
 			break;
 		case DS3:
-			switch (DS3Life)
-			{
-			case 4:
-				DS3L[4].setTexture(playHead3L);
-				break;
-			case 3:
-				DS3L[4].setTexture(playHead3L);
-				DS3L[3].setTexture(playHead3L);
-				break;
-			case 2:
-				DS3L[4].setTexture(playHead3L);
-				DS3L[3].setTexture(playHead3L);
-				DS3L[2].setTexture(playHead3L);
-				break;
-			case 1:
-				DS3L[4].setTexture(playHead3L);
-				DS3L[3].setTexture(playHead3L);
-				DS3L[2].setTexture(playHead3L);
-				DS3L[1].setTexture(playHead3L);
-				break;
-			case 0:
-				result();
-				break;
+			for (int i = 0; i < BOX_CANT; i++) {
+				if (pChara3.getGlobalBounds().intersects(pBox[i].sprite.getGlobalBounds())) {
+					DS3Life--;
+					pBox[i].sprite.move(900, 0);
+				}
+			}
+			for (int i = 0; i < GEM_CANT; i++) {
+				if (pChara3.getGlobalBounds().intersects(pGem[i].sprite.getGlobalBounds())) {
+					playScoreCant += 100;
+					gem_y = ((rand() % (GEM_MIN - GEM_MAX + 1) + GEM_MIN));
+					pGem[i].sprite.move(900, gem_y);
+				}
 			}
 			break;
+		}
+		//SCORE-----------------------------------------------------------------------------------------
+		{
+			ss.clear();
+			ss.str("");
+			ss << playScoreCant;
+			scoreText.setString(ss.str());
 		}
 		window.clear();
 		window.draw(pBG1);
 		window.draw(pBG2);
 		window.draw(pDB);
 		window.draw(pScore);
+		window.draw(scoreText);
 		window.draw(pLife);
+		for (int i = 0; i < GEM_CANT; i++) {
+			window.draw(pGem[i].sprite);
+		}
 		for (int i = 0; i < BOX_CANT; i++) {
 			window.draw(pBox[i].sprite);
 		}

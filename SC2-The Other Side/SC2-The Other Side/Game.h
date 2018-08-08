@@ -3,13 +3,23 @@
 #define DSL1_CANT 3
 #define DSL3_CANT 5
 #define BOX_CANT 5
+#define GEM_CANT 10
 #define BOX_MAX 450
 #define BOX_MIN 75
+#define GEM_MAX 450
+#define GEM_MIN 80
 #define DS1_L 3
 #define DS2_L 1
 #define DS3_L 5
+#define DS1_X 96
+#define DS1_Y 62
+#define DS2_X 162
+#define DS2_Y 66
+#define DS3_X 130
+#define DS3_Y 130
 #include <iostream>
 #include <ctime>
+#include <sstream>
 #include <SFML/Graphics.hpp>
 using namespace std;
 using namespace sf;
@@ -72,6 +82,7 @@ class Game{
 	Texture playBox3;
 	Texture playBox4;
 	Texture playBox5;
+	Texture playGem;
 	Sprite pBG1;
 	Sprite pBG2;
 	Sprite pDB;
@@ -83,20 +94,29 @@ class Game{
 	Sprite pChara1;
 	Sprite pChara2;
 	Sprite pChara3;
+	struct PGem {
+		Sprite sprite;
+		Vector2f pos;
+	};
 	struct PBox{
 		Sprite sprite;
 		Vector2f pos;
 	};
 	PBox pBox[BOX_CANT];
+	PGem pGem[GEM_CANT];
+	Text scoreText;
+	ostringstream ss;
 	int playSpeed;
 	int bgpos;
 	int bgpos2;
 	int playCPos_X;
 	int playCPos_Y;
 	int box_Y;
+	int gem_y;
 	int DS1Life;
 	int DS2Life;
 	int DS3Life;
+	int playScoreCant;
 	
 public:
 	Game();
