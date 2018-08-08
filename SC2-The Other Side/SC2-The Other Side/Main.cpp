@@ -3,4 +3,5 @@
 int main()
 {
 	Game* juego = new Game();
+	delete juego;
 }
